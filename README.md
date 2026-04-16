@@ -1,1 +1,1 @@
-# Attndly---An-Attendance-System-for-Schools
+# Attndly-An Attendance System for Schools
