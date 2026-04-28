@@ -34,13 +34,13 @@ student attendance digitally. Built with Node.js, Express, and MySQL.
 ```
  attndly/
 │
-├── 📄 .gitignore
-├── 📄 package.json
-├── 📄 server.js            # Express backend + all API routes
+├── .gitignore
+├── package.json
+├── server.js            # Express backend + all API routes
 │
-└── 📁 public/
-    ├── 📄 login.html       # Sign In & Create Account page
-    └── 📄 dashboard.html   # Main teacher dashboard
+└── public/
+    ├── login.html       # Sign In & Create Account page
+    └── dashboard.html   # Main teacher dashboard
 ```
 ---
 
