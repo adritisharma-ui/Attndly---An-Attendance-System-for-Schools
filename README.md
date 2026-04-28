@@ -31,6 +31,7 @@ student attendance digitally. Built with Node.js, Express, and MySQL.
 ---
 
 ## Project Structure
+```
  attndly/
 │
 ├── 📄 .gitignore
@@ -40,7 +41,7 @@ student attendance digitally. Built with Node.js, Express, and MySQL.
 └── 📁 public/
     ├── 📄 login.html       # Sign In & Create Account page
     └── 📄 dashboard.html   # Main teacher dashboard
-
+```
 ---
 
 ## Setup & Installation
