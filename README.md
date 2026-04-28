@@ -31,12 +31,15 @@ student attendance digitally. Built with Node.js, Express, and MySQL.
 ---
 
 ## Project Structure
-attndly/
-├── server.js          # Express backend + all API routes
-├── package.json
-├── public/
-│   ├── login.html     # Sign In & Create Account page
-│   └── dashboard.html # Main teacher dashboard
+ attndly/
+│
+├── 📄 .gitignore
+├── 📄 package.json
+├── 📄 server.js            # Express backend + all API routes
+│
+└── 📁 public/
+    ├── 📄 login.html       # Sign In & Create Account page
+    └── 📄 dashboard.html   # Main teacher dashboard
 
 ---
 
