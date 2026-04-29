@@ -147,18 +147,16 @@ node server.js
 ```
 
 ### 6. Open in browser
-http://localhost:3000/login.html
+### http://localhost:3000/login.html
 ---
 
 ## Database Schema
 
 ### teachers      → id, name, email, password_hash, created_at
-sections      → id, section_name, subject, teacher_id (FK), academic_year
-students      → id, roll_number, name, section_id (FK), created_at
-attendance    → id, student_id (FK), section_id (FK), attendance_date,
-status, marked_by (FK), marked_at
-notifications → id, teacher_id (FK), section_id (FK), title,
-message, type, is_read, created_at
+### sections      → id, section_name, subject, teacher_id (FK), academic_year
+### students      → id, roll_number, name, section_id (FK), created_at
+### attendance    → id, student_id (FK), section_id (FK), attendance_date, status, marked_by (FK), marked_at
+### notifications → id, teacher_id (FK), section_id (FK), title, message, type, is_read, created_at
 ---
 
 ## API Endpoints
