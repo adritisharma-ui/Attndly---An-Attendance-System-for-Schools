@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attndly - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #F4F7FB;
+        }
+        nav {
+            background: #1B3D6E;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .logo span { color: #2E6BC4; }
+        .nav-user {
+            background: rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        button {
+            background: #2E6BC4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1B3D6E;
+        }
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .section-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        .section-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1B3D6E;
+        }
+        .section-subject {
+            color: #6B7A90;
+            margin: 5px 0;
+        }
+        .section-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            padding: 10px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+        .stat-value.present { color: #1A7A4A; font-weight: bold; }
+        .stat-value.absent { color: #C0392B; font-weight: bold; }
+        .stat-value.late { color: #B36A00; font-weight: bold; }
+        .student-count {
+            color: #6B7A90;
+            font-size: 14px;
+        }
+        .greeting {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">att<span>ndly</span></div>
+        <div>
+            <span class="nav-user" id="userName"></span>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <div class="greeting">
+            <h1 id="greeting"></h1>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalStudents">0</div>
+                <div>Total Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="presentToday">0</div>
+                <div>Present Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="absentToday">0</div>
+                <div>Absent</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="lateToday">0</div>
+                <div>Late</div>
+            </div>
+        </div>
+        
+        <h2 style="margin-bottom: 20px;">Your Sections</h2>
+        <div class="sections" id="sections"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let token = localStorage.getItem('token');
+        let user = JSON.parse(localStorage.getItem('user') || '{}');
+        
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+        
+        document.getElementById('userName').textContent = user.name || 'Teacher';
+        
+        const hour = new Date().getHours();
+        const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+        document.getElementById('greeting').innerHTML = `${greet}, ${user.name ? user.name.split(' ')[0] : 'Teacher'}! 👋`;
+        
+        async function loadDashboard() {
+            try {
+                const statsRes = await fetch(`${API_URL}/dashboard/stats`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const stats = await statsRes.json();
+                document.getElementById('totalStudents').textContent = stats.total_students || 0;
+                document.getElementById('presentToday').textContent = stats.present_today || 0;
+                document.getElementById('absentToday').textContent = stats.absent_today || 0;
+                document.getElementById('lateToday').textContent = stats.late_today || 0;
+                
+                const sectionsRes = await fetch(`${API_URL}/teacher/sections`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const sections = await sectionsRes.json();
+                
+                const container = document.getElementById('sections');
+                container.innerHTML = '';
+                
+                sections.forEach(section => {
+                    const card = document.createElement('div');
+                    card.className = 'section-card';
+                    card.innerHTML = `
+                        <div class="section-name">${section.section_name}</div>
+                        <div class="section-subject">${section.subject}</div>
+                        <div class="section-stats">
+                            <div><span class="stat-value present">${section.present_count || 0}</span><br>Present</div>
+                            <div><span class="stat-value absent">${section.absent_count || 0}</span><br>Absent</div>
+                            <div><span class="stat-value late">${section.late_count || 0}</span><br>Late</div>
+                        </div>
+                        <div class="student-count">${section.total_students} students</div>
+                    `;
+                    card.onclick = () => alert(`Opening attendance for ${section.section_name} (Coming soon)`);
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+        
+        loadDashboard();
+    </script>
+</body>
+</html>
